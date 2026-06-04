@@ -32,7 +32,7 @@ export const postStatus = (object) => {
 
 export const getStatus = (setAllStatus) => {
   const q = query(postsRef, orderBy("timeStamp"));
-  onSnapshot(q, (response) => {
+  return onSnapshot(q, (response) => {
     setAllStatus(
       response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
@@ -42,7 +42,7 @@ export const getStatus = (setAllStatus) => {
 };
 
 export const getAllUsers = (setAllUsers) => {
-  onSnapshot(userRef, (response) => {
+  return onSnapshot(userRef, (response) => {
     setAllUsers(
       response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
@@ -53,7 +53,7 @@ export const getAllUsers = (setAllUsers) => {
 
 export const getSingleStatus = (setAllStatus, id) => {
   const singlePostQuery = query(postsRef, where("userID", "==", id));
-  onSnapshot(singlePostQuery, (response) => {
+  return onSnapshot(singlePostQuery, (response) => {
     setAllStatus(
       response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
@@ -64,7 +64,7 @@ export const getSingleStatus = (setAllStatus, id) => {
 
 export const getSingleUser = (setCurrentUser, email) => {
   const singleUserQuery = query(userRef, where("email", "==", email));
-  onSnapshot(singleUserQuery, (response) => {
+  return onSnapshot(singleUserQuery, (response) => {
     setCurrentUser(
       response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
@@ -82,15 +82,14 @@ export const postUserData = (object) => {
 };
 
 export const getCurrentUser = (setCurrentUser) => {
-  onSnapshot(userRef, (response) => {
+  const email = localStorage.getItem("userEmail");
+  if (!email) return () => {};
+  const q = query(userRef, where("email", "==", email));
+  return onSnapshot(q, (response) => {
     setCurrentUser(
-      response.docs
-        .map((docs) => {
-          return { ...docs.data(), id: docs.id };
-        })
-        .filter((item) => {
-          return item.email === localStorage.getItem("userEmail");
-        })[0]
+      response.docs.map((docs) => {
+        return { ...docs.data(), id: docs.id };
+      })[0]
     );
   });
 };
@@ -124,7 +123,7 @@ export const getLikesByUser = (userId, postId, setLiked, setLikesCount) => {
   try {
     let likeQuery = query(likeRef, where("postId", "==", postId));
 
-    onSnapshot(likeQuery, (response) => {
+    return onSnapshot(likeQuery, (response) => {
       let likes = response.docs.map((doc) => doc.data());
       let likesCount = likes?.length;
 
@@ -155,7 +154,7 @@ export const getComments = (postId, setComments) => {
   try {
     let singlePostQuery = query(commentsRef, where("postId", "==", postId));
 
-    onSnapshot(singlePostQuery, (response) => {
+    return onSnapshot(singlePostQuery, (response) => {
       const comments = response.docs.map((doc) => {
         return {
           id: doc.id,
@@ -170,10 +169,10 @@ export const getComments = (postId, setComments) => {
   }
 };
 
-export const updatePost = (id, status, postImage) => {
+export const updatePost = (id, status, postImages) => {
   let docToUpdate = doc(postsRef, id);
   try {
-    updateDoc(docToUpdate, { status, postImage });
+    updateDoc(docToUpdate, { status, postImages });
     toast.success("Post has been updated!");
   } catch (err) {
     console.log(err);
@@ -209,7 +208,7 @@ export const getConnections = (userId, targetId, setIsConnected) => {
       where("targetId", "==", targetId)
     );
 
-    onSnapshot(connectionsQuery, (response) => {
+    return onSnapshot(connectionsQuery, (response) => {
       let connections = response.docs.map((doc) => doc.data());
 
       const isConnected = connections.some(

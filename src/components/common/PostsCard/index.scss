@@ -81,3 +81,98 @@
 .modal {
   margin-top: 30px;
 }
+
+.carousel-counter {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 10px;
+  font-family: system-ui, -apple-system, sans-serif;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.post-images-carousel {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+  overflow: hidden;
+
+  .carousel-slide {
+    height: 400px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    .post-image {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  // Ant Design Carousel Customizations (Arrows & Dots)
+  .slick-prev,
+  .slick-next {
+    font-size: 24px;
+    color: white !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    z-index: 10;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.8) !important;
+    }
+  }
+
+  .slick-prev {
+    left: 10px;
+  }
+
+  .slick-next {
+    right: 10px;
+  }
+
+  .slick-dots {
+    bottom: 12px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 0 !important;
+      width: auto !important;
+      height: auto !important;
+
+      button {
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 3px !important;
+        background: rgba(255, 255, 255, 0.4) !important;
+        opacity: 1 !important;
+        padding: 0 !important;
+        transition: all 0.3s ease !important;
+      }
+
+      &.slick-active button {
+        width: 18px !important;
+        background: #fff !important;
+      }
+    }
+  }
+}

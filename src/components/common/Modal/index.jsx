@@ -13,8 +13,8 @@ const ModalComponent = ({
   isEdit,
   updateStatus,
   uploadPostImage,
-  setPostImage,
-  postImage,
+  setPostImages,
+  postImages,
   currentPost,
   setCurrentPost,
 }) => {
@@ -28,13 +28,13 @@ const ModalComponent = ({
         onOk={() => {
           setStatus("");
           setModalOpen(false);
-          setPostImage("");
+          setPostImages([]);
           setCurrentPost({});
         }}
         onCancel={() => {
           setStatus("");
           setModalOpen(false);
-          setPostImage("");
+          setPostImages([]);
           setCurrentPost({});
         }}
         footer={[
@@ -63,26 +63,45 @@ const ModalComponent = ({
               <Progress type="circle" percent={progress} />
             </div>
           )}
-          {postImage?.length > 0 || currentPost?.postImage?.length ? (
-            <img
-              className="preview-image"
-              src={postImage || currentPost?.postImage}
-              alt="postImage"
-            />
+          {postImages?.length > 0 ? (
+            <div className="preview-images-container">
+              {postImages.map((image, index) => (
+                <div key={index} className="preview-image-wrapper">
+                  <img
+                    className="preview-image"
+                    src={image}
+                    alt={`postImage-${index}`}
+                  />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() =>
+                      setPostImages((prev) => prev.filter((_, i) => i !== index))
+                    }
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           ) : (
             <></>
           )}
         </div>
-        <label for="pic-upload">
+        <label htmlFor="pic-upload">
           <AiOutlinePicture size={35} className="picture-icon" />
         </label>
         <input
           id="pic-upload"
-          type={"file"}
+          type="file"
+          multiple
           hidden
-          onChange={(event) =>
-            uploadPostImage(event.target.files[0], setPostImage, setProgress)
-          }
+          onChange={(event) => {
+            const files = Array.from(event.target.files);
+            files.forEach((file) => {
+              uploadPostImage(file, setPostImages, setProgress);
+            });
+          }}
         />
       </Modal>
     </>
