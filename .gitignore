@@ -39,4 +39,8 @@ artificali-firebase-adminsdk-fbsvc-87bf47a3ec.json
 # Rollup bundle stats
 stats.html
 
+# Firebase configs
+firebaseconfig.env
+
+
 

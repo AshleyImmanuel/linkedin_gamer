@@ -22,8 +22,25 @@
 .picture-icon {
   color: #0073b1;
   cursor: pointer;
-  position: absolute;
-  bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  margin-top: 15px;
+  border-top: 1px solid #eef3f8;
+  padding-top: 10px;
+
+  .picture-icon {
+    color: #0073b1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #004b7c;
+    }
+  }
 }
 
 .preview-images-container {
