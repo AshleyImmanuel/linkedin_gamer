@@ -1,17 +1,18 @@
 .popup-card {
-  border: 1px solid #a8a8a8;
+  border: 1px solid var(--color-border);
   width: 200px;
   height: auto;
-  background-color: whitesmoke;
-  border-radius: 5px;
+  background-color: var(--color-card);
+  border-radius: 8px;
   display: flex;
   justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   flex-direction: column;
   padding: 20px;
   .name {
     font-size: 16px;
-    color: rgba(0, 0, 0, 0.9);
+    color: var(--color-text);
     font-weight: 600;
     text-align: left;
     margin-top: -7px;
@@ -20,10 +21,17 @@
   .headline {
     font-size: 14px;
     font-weight: 400;
-    color: rgba(0, 0, 0, 0.9);
+    color: var(--color-text-secondary);
     margin-top: -15px;
   }
   .popup-option {
     cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--color-primary);
+    }
   }
 }
+

@@ -2,18 +2,21 @@
   width: 200px;
   height: 30px;
   cursor: pointer;
-  background-color: whitesmoke;
-  border: 2px solid #003365;
-  color: #014488;
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
   border-radius: 30px;
   font-family: system-ui;
   font-weight: 600;
   font-size: 14px;
   margin: 7px 0;
+  transition: all 0.2s ease-in-out;
 }
 
 .common-btn:hover {
-  background-color: rgb(230, 230, 230);
-  border: 2px solid #014488;
-  color: #014488;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(138, 46, 255, 0.4);
 }
+
