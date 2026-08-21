@@ -35,7 +35,7 @@
   .add-comment-btn {
     width: 150px;
     height: 35px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    background: var(--logo-gradient);
     color: white;
     outline: none;
     border: none;
@@ -47,8 +47,8 @@
     transition: all 0.2s ease;
 
     &:hover {
-      opacity: 0.9;
-      box-shadow: 0 0 10px rgba(255, 46, 154, 0.4);
+      opacity: 0.95;
+      box-shadow: 0 4px 12px rgba(255, 46, 154, 0.45);
     }
   }
   .all-comments {
@@ -102,18 +102,38 @@
     display: flex;
     align-items: center;
     margin-top: -20px;
-    .blue {
+    gap: 8px;
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+
+    &:hover {
       color: var(--color-primary);
+
+      .like-icon, .comment-icon {
+        transform: scale(1.05);
+      }
     }
 
-    .black {
-      color: var(--color-text-secondary);
+    .like-icon, .comment-icon {
+      color: currentColor;
+      transition: all 0.2s ease;
     }
+
+    .like-icon.active, .comment-icon.active {
+      color: var(--color-secondary);
+      filter: drop-shadow(0 0 6px var(--color-secondary));
+    }
+
     p {
       font-family: Inter, sans-serif;
       font-weight: 600;
-      color: var(--color-text-secondary);
+      color: currentColor;
       font-size: 16px;
+      margin: 0;
+    }
+
+    p.active {
+      color: var(--color-secondary);
     }
   }
 }

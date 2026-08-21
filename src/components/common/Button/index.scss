@@ -14,9 +14,9 @@
 }
 
 .common-btn:hover {
-  background-color: var(--color-primary);
+  background: var(--logo-gradient);
   color: #ffffff;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 12px rgba(138, 46, 255, 0.4);
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(138, 46, 255, 0.4);
 }
 

@@ -78,10 +78,10 @@
     }
 
     button:hover {
-      border: 1.5px solid var(--color-primary);
-      background-color: var(--color-primary);
+      border: 1.5px solid transparent;
+      background: var(--logo-gradient);
       color: white;
-      box-shadow: 0 0 10px rgba(138, 46, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(138, 46, 255, 0.4);
     }
   }
 }
