@@ -23,6 +23,10 @@ export const router = createBrowserRouter([
     element: <ProfileLayout />,
   },
   {
+    path: "/user/:id",
+    element: <ProfileLayout />,
+  },
+  {
     path: "/connections",
     element: <ConnectionLayout />,
   },
