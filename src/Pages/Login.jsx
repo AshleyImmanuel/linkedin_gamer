@@ -9,13 +9,14 @@ export default function Login() {
   const [loading, setLoading] = useState(true);
   let navigate = useNavigate();
   useEffect(() => {
-    onAuthStateChanged(auth, (res) => {
-      if (res?.accessToken) {
+    const unsubscribe = onAuthStateChanged(auth, (res) => {
+      if (res) {
         navigate("/home");
       } else {
         setLoading(false);
       }
     });
+    return () => unsubscribe();
   }, []);
   return loading ? <Loader /> : <LoginComponent />;
 }

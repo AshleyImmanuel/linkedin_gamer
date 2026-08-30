@@ -25,7 +25,7 @@ export default function RegisterComponent() {
       localStorage.setItem("userEmail", res.user.email);
     } catch (err) {
       console.log(err);
-      toast.error("Cannot Create your Account");
+      toast.error(err?.message || "Cannot Create your Account");
     }
   };
 

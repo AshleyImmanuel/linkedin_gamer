@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { getSingleStatus, getSingleUser } from "../../../api/FirestoreAPI";
 import PostsCard from "../PostsCard";
 import { HiOutlinePencil } from "react-icons/hi";
@@ -15,7 +15,9 @@ export default function ProfileCard({ onEdit, currentUser }) {
   const [progress, setProgress] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const getImage = (event) => {
-    setCurrentImage(event.target.files[0]);
+    if (event.target.files && event.target.files[0]) {
+      setCurrentImage(event.target.files[0]);
+    }
   };
   console.log(currentProfile);
   const uploadImage = () => {
@@ -28,15 +30,23 @@ export default function ProfileCard({ onEdit, currentUser }) {
     );
   };
 
-  useMemo(() => {
+  useEffect(() => {
+    let unsubscribeStatus;
+    let unsubscribeUser;
+
     if (location?.state?.id) {
-      getSingleStatus(setAllStatus, location?.state?.id);
+      unsubscribeStatus = getSingleStatus(setAllStatus, location?.state?.id);
     }
 
     if (location?.state?.email) {
-      getSingleUser(setCurrentProfile, location?.state?.email);
+      unsubscribeUser = getSingleUser(setCurrentProfile, location?.state?.email);
     }
-  }, []);
+
+    return () => {
+      if (unsubscribeStatus) unsubscribeStatus();
+      if (unsubscribeUser) unsubscribeUser();
+    };
+  }, [location?.state?.id, location?.state?.email]);
 
   return (
     <>
@@ -60,13 +70,22 @@ export default function ProfileCard({ onEdit, currentUser }) {
           <div>
             <img
               className="profile-image"
-              onClick={() => setModalOpen(true)}
+              onClick={
+                (!location?.state?.id || location?.state?.id === currentUser.id)
+                  ? () => setModalOpen(true)
+                  : undefined
+              }
               src={
                 Object.values(currentProfile).length === 0
                   ? currentUser.imageLink
                   : currentProfile?.imageLink
               }
               alt="profile-image"
+              style={{
+                cursor: (!location?.state?.id || location?.state?.id === currentUser.id)
+                  ? "pointer"
+                  : "default"
+              }}
             />
             <h3 className="userName">
               {Object.values(currentProfile).length === 0

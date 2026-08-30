@@ -1,6 +1,7 @@
 import { storage } from "../firebaseConfig";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { editProfile } from "./FirestoreAPI";
+import { getUniqueID } from "../helpers/getUniqueId";
 
 export const uploadImage = (
   file,
@@ -9,7 +10,8 @@ export const uploadImage = (
   setProgress,
   setCurrentImage
 ) => {
-  const profilePicsRef = ref(storage, `profileImages/${file.name}`);
+  if (!file || !file.name) return;
+  const profilePicsRef = ref(storage, `profileImages/${id}_${file.name}`);
   const uploadTask = uploadBytesResumable(profilePicsRef, file);
 
   uploadTask.on(
@@ -22,7 +24,7 @@ export const uploadImage = (
       setProgress(progress);
     },
     (error) => {
-      console.error(err);
+      console.error(error);
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((response) => {
@@ -35,8 +37,9 @@ export const uploadImage = (
   );
 };
 
-export const uploadPostImage = (file, setPostImage, setProgress) => {
-  const postPicsRef = ref(storage, `postImages/${file.name}`);
+export const uploadPostImage = (file, setPostImages, setProgress) => {
+  if (!file || !file.name) return;
+  const postPicsRef = ref(storage, `postImages/${getUniqueID()}_${file.name}`);
   const uploadTask = uploadBytesResumable(postPicsRef, file);
 
   uploadTask.on(
@@ -49,11 +52,12 @@ export const uploadPostImage = (file, setPostImage, setProgress) => {
       setProgress(progress);
     },
     (error) => {
-      console.error(err);
+      console.error(error);
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((response) => {
-        setPostImage(response);
+        setPostImages((prev) => [...prev, response]);
+        setProgress(0);
       });
     }
   );

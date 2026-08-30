@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { postStatus, getStatus, updatePost } from "../../../api/FirestoreAPI";
 import { getCurrentTimeStamp } from "../../../helpers/useMoment";
 import ModalComponent from "../Modal";
@@ -13,7 +13,7 @@ export default function PostStatus({ currentUser }) {
   const [allStatuses, setAllStatus] = useState([]);
   const [currentPost, setCurrentPost] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const [postImage, setPostImage] = useState("");
+  const [postImages, setPostImages] = useState([]);
 
   const sendStatus = async () => {
     let object = {
@@ -23,28 +23,34 @@ export default function PostStatus({ currentUser }) {
       userName: currentUser.name,
       postID: getUniqueID(),
       userID: currentUser.id,
-      postImage: postImage,
+      postImages: postImages,
     };
     await postStatus(object);
-    await setModalOpen(false);
+    setModalOpen(false);
     setIsEdit(false);
-    await setStatus("");
+    setStatus("");
+    setPostImages([]);
   };
 
   const getEditData = (posts) => {
     setModalOpen(true);
     setStatus(posts?.status);
     setCurrentPost(posts);
+    setPostImages(posts?.postImages || (posts?.postImage ? [posts.postImage] : []));
     setIsEdit(true);
   };
 
   const updateStatus = () => {
-    updatePost(currentPost.id, status, postImage);
+    updatePost(currentPost.id, status, postImages);
     setModalOpen(false);
+    setStatus("");
+    setPostImages([]);
+    setCurrentPost({});
   };
 
-  useMemo(() => {
-    getStatus(setAllStatus);
+  useEffect(() => {
+    const unsubscribe = getStatus(setAllStatus);
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -80,8 +86,8 @@ export default function PostStatus({ currentUser }) {
         isEdit={isEdit}
         updateStatus={updateStatus}
         uploadPostImage={uploadPostImage}
-        postImage={postImage}
-        setPostImage={setPostImage}
+        postImages={postImages}
+        setPostImages={setPostImages}
         setCurrentPost={setCurrentPost}
         currentPost={currentPost}
       />

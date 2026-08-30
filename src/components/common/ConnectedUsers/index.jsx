@@ -5,7 +5,10 @@ import { getConnections } from "../../../api/FirestoreAPI";
 export default function ConnectedUsers({ user, getCurrentUser, currentUser }) {
   const [isConnected, setIsConnected] = useState(false);
   useEffect(() => {
-    getConnections(currentUser.id, user.id, setIsConnected);
+    const unsubscribe = getConnections(currentUser.id, user.id, setIsConnected);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [currentUser.id, user.id]);
   return isConnected ? (
     <></>

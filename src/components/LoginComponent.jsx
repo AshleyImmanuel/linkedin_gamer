@@ -16,7 +16,7 @@ export default function LoginComponent() {
       navigate("/home");
     } catch (err) {
       console.log(err);
-      toast.error("Please Check your Credentials");
+      toast.error(err?.message || "Please Check your Credentials");
     }
   };
 
