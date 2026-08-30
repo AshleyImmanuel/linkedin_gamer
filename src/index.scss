@@ -17,6 +17,7 @@ $linkedinBlue3: #FF7A00;
   --color-text-secondary: #B5B5C5;   // Light Gray
   --color-border: rgba(255, 255, 255, 0.08); // Subtle border line
   --color-hover-overlay: rgba(138, 46, 255, 0.12);
+  --logo-gradient: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 35%, var(--color-accent) 70%, var(--color-highlight) 100%);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -27,8 +28,48 @@ $linkedinBlue3: #FF7A00;
 
 body {
   background-color: var(--color-background);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(138, 46, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 46, 154, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 122, 0, 0.04) 0%, transparent 50%);
+  background-attachment: fixed;
   color: var(--color-text);
   margin: 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-secondary), var(--color-accent), var(--color-highlight));
+}
+
+/* Text Selection */
+::selection {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+/* Gradient Utilities */
+.text-gradient {
+  background: var(--logo-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.bg-gradient {
+  background: var(--logo-gradient);
 }
 
 .common-input {
@@ -46,7 +87,7 @@ body {
 .common-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 8px rgba(138, 46, 255, 0.25);
+  box-shadow: 0 0 8px rgba(138, 46, 255, 0.35);
 }
 ::placeholder {
   font-family: system-ui;
@@ -70,7 +111,7 @@ body {
 .common-textArea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 8px rgba(138, 46, 255, 0.25);
+  box-shadow: 0 0 8px rgba(138, 46, 255, 0.35);
 }
 
 // Global Ant Design Overrides to fit Dark Theme
@@ -114,20 +155,21 @@ body {
 }
 
 .ant-btn-primary {
-  background-color: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
+  background: var(--logo-gradient) !important;
+  border: none !important;
   color: #fff !important;
+  box-shadow: 0 4px 15px rgba(138, 46, 255, 0.25) !important;
   
   &:hover, &:focus {
-    background-color: var(--color-secondary) !important;
-    border-color: var(--color-secondary) !important;
-    box-shadow: 0 0 10px rgba(255, 46, 154, 0.4) !important;
+    opacity: 0.9 !important;
+    box-shadow: 0 4px 15px rgba(255, 46, 154, 0.4) !important;
   }
 
   &:disabled {
-    background-color: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     border-color: transparent !important;
     color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: none !important;
   }
 }
 

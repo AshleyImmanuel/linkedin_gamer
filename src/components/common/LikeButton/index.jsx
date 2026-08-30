@@ -40,25 +40,24 @@ export default function LikeButton({ userId, postId, currentUser }) {
       <div className="like-comment">
         <div className="likes-comment-inner" onClick={handleLike}>
           {liked ? (
-            <BsFillHandThumbsUpFill size={30} color="#0a66c2" />
+            <BsFillHandThumbsUpFill size={30} className="like-icon active" />
           ) : (
-            <BsHandThumbsUp size={30} />
+            <BsHandThumbsUp size={30} className="like-icon" />
           )}
 
-          <p className={liked ? "blue" : "black"}>Like</p>
+          <p className={liked ? "active" : ""}>Like</p>
         </div>
         <div
           className="likes-comment-inner"
           onClick={() => setShowCommentBox(!showCommentBox)}
         >
-          {
-            <AiOutlineComment
-              size={30}
-              color={showCommentBox ? "#0a66c2" : "#212121"}
-            />
-          }
+          {showCommentBox ? (
+            <AiOutlineComment size={30} className="comment-icon active" />
+          ) : (
+            <AiOutlineComment size={30} className="comment-icon" />
+          )}
 
-          <p className={showCommentBox ? "blue" : "black"}>Comments</p>
+          <p className={showCommentBox ? "active" : ""}>Comments</p>
         </div>
       </div>
       {showCommentBox ? (

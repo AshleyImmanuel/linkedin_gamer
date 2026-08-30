@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gaming Website Landing Page</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-styles">
+    body {
+      background-color: #0d0d0d;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif; /* Fallback sans-serif */
+    }
+    .text-orange-custom {
+      color: #f97316;
+    }
+    .bg-orange-custom {
+      background-color: #f97316;
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-link:hover {
+      color: #f97316;
+    }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 50%;
+      height: 2px;
+      background-color: #f97316;
+    }
+    .bg-dark-gray {
+      background-color: #1a1a1a;
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+  </style>
+</head>
+<body class="antialiased font-sans">
+<!-- BEGIN: NavigationBar -->
+<nav class="container mx-auto px-6 py-6 flex items-center justify-between z-50 relative" data-purpose="main-navigation">
+<!-- Logo -->
+<a class="text-2xl font-bold tracking-wider uppercase flex-shrink-0" href="#">Logo</a>
+<!-- Nav Links -->
+<div class="hidden md:flex space-x-8 text-sm font-medium items-center justify-center flex-grow">
+<a class="nav-link active" href="#">Home</a>
+<a class="nav-link" href="#">About us</a>
+<a class="nav-link" href="#">Portfolio</a>
+<a class="nav-link" href="#">News</a>
+</div>
+<!-- Contact Button -->
+<div class="hidden md:block flex-shrink-0">
+<a class="bg-orange-custom text-white px-6 py-2 rounded-md font-medium hover:bg-orange-600 transition-colors" href="#">Contact us</a>
+</div>
+<!-- Mobile Menu Button (Hidden for now, placeholder) -->
+<div class="md:hidden">
+<button class="text-white hover:text-orange-custom">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</nav>
+<!-- END: NavigationBar -->
+<!-- BEGIN: HeroSection -->
+<section class="container mx-auto px-6 pt-12 pb-24 relative overflow-hidden flex flex-col md:flex-row items-center justify-between" data-purpose="hero-section">
+<!-- Text Content -->
+<div class="md:w-1/2 z-10 space-y-6">
+<p class="text-orange-custom font-semibold tracking-wide">3D game Dev</p>
+<h1 class="text-5xl md:text-6xl font-bold leading-tight">
+        Work that we <br/>
+        produce for our <br/>
+        clients
+      </h1>
+<p class="text-gray-400 text-sm md:text-base max-w-md leading-relaxed">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard.
+      </p>
+<div class="pt-4">
+<a class="bg-orange-custom text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition-colors inline-block" href="#">Get more details</a>
+</div>
+</div>
+<!-- Hero Image Area -->
+<div class="md:w-1/2 mt-16 md:mt-0 relative flex justify-center items-center h-[500px]" data-purpose="hero-image">
+<!-- Gamepad Image (Placeholder for the actual complex composed image) -->
+<img alt="3D Game Controller" class="w-full max-w-lg object-contain relative z-20 drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyk5oq-ZxTMnSlXOiAmOuNrmL4B_myuV-gbltbxNVtDQKHB6AYX9Dkxbl6zkugD3MHxAuslO9IFBE_ETAoeNIEYEXzdc3KQXaGcSX3mujEIes-qneKSpghSA3hRGu9ZbcwDpW5BR9gcu2Rs2kVGtr0APArIKCE45NrC20SZiBOVqPmlzytRQcjOGSGBAvu1vCZiLOiJ6ivzUiOdkcdJCioLEF7GSFUQanmdGOi2zyQScLGP-Qjtwau"/>
+<!-- Logos placed around (Abstracted positions based on reference) -->
+<img alt="CryEngine Logo" class="absolute top-1/4 left-1/4 opacity-75 hidden lg:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjLK0R1gOm0-77xp32LOQ_smu7z44huP64CViDUWzI6-J3jr95vUWx0uQ-btsosqlfunjF15Ka4GVZj7tyE_fVpCD7icSoWjpyXn1-HkqmWXfN_XizDMK0SvpYG1nw1gAkHOlLOSyrFn7MiyIXIRZkwctNRc5QnKu-Nfp0doTjxbKElmCNJaag9Vfsd1xv8BKtweeDtvek2_Uht6e_9MvzDJF0hgeOM0plSLsaUihtwLt2aljwtYLz"/>
+<img alt="Unreal Engine Logo" class="absolute top-1/4 right-1/4 opacity-75 hidden lg:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAj8hKM68KEQp39IZ5VAI60h6fzCUadzGg2OIRL9Wp-fx29mDJLp1hdtM4NUs1uuyZK9UWHpPB9ay6NT3y_6gDMBVtDeMXRGXmUDLpwjtUOM568IASbNponpS11KZT4Hf-iO81b6c10bhhn03MRuSjT0viBkLLztAJruT_WUUmteXp_x4M-ggTJzC2URm0ma5Xp20vqNqbnNTRRmKPPHZFpk6YchVT_RfijUT156LPLKD9NuQRLy5SG"/>
+<img alt="Unity Logo" class="absolute top-1/2 left-0 opacity-75 hidden lg:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBowzj0EuykIcalyBA5qA_nDXP45KFbTNEk5ucenQqiTbacteObq3ZNGx5t843RTlDaKya7FCXeZsi9Tkp0xGad04jqlP5gZEJIiwT7I2yIY9Z-9YXtmdB8-hFY-yFWUndV-NG02-iqYc_wmrtjHSnvpauGZZzngoMaXBRO8d94eFVZb9v1wyDD7a4cx2Hz8Xn71rg1cuWoWyt5CNCenWJkU0SLKmcjc9RbzNZejmKewzUM68gI12zp"/>
+</div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: TrendingGamesSection -->
+<section class="container mx-auto px-6 py-16" data-purpose="trending-games">
+<div class="flex justify-between items-center mb-10">
+<h2 class="text-3xl font-bold">Currently Trending Games</h2>
+<a class="bg-dark-gray text-white px-6 py-2 rounded-md text-sm font-semibold hover:bg-gray-700 transition-colors uppercase tracking-wider" href="#">SEE ALL</a>
+</div>
+<!-- Games Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Game Card 1 -->
+<div class="game-card flex flex-col items-center group cursor-pointer" data-purpose="game-card">
+<div class="w-full h-64 rounded-xl overflow-hidden mb-4 relative">
+<img alt="Warriors Game" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzhgU6NjOwxFdWppb4VNATJTXrh9HVL-ztI-XlbUdWSKwDOaLgpFE8AR8F-94QBiJoy3H-Y1Bg7kSCmj-PqE81Fy3oluy60e6i16iwN_zOEDxgJ0gXDHwQeHZHka8DT21nXjOTdMyvrLp1hoAlfXb7iFOZIG6YfYPmOZvgmZZkaew7kk_ocLlH5lFWGQQKisBZZguNQ6uWhgs-yqB5dTw3hvmzR6O5c-FlbUuA7TscYfyPu3HxJUmN"/>
+</div>
+<div class="flex items-center space-x-2 text-sm font-medium">
+<svg class="h-4 w-4 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" fill-rule="evenodd"></path>
+</svg>
+<span>40 Followers</span>
+</div>
+</div>
+<!-- Game Card 2 -->
+<div class="game-card flex flex-col items-center group cursor-pointer" data-purpose="game-card">
+<div class="w-full h-64 rounded-xl overflow-hidden mb-4 relative">
+<img alt="Futuristic Game" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2ZK2EQHnf8gKE8iPljUIBzp7zE7yhp_X3xiHwwXJjkbHmak_L-LH2tZ3AhtIot3CgtjIkZlkxYYd1gb9MrWgBoDgFCXjMqSEPhOlNTU36o3ALN1QxZ7C4_lHBfE0TR-zzWvuff2DcwZbdtXHOwIfbtqDUz1whzRc5hMYoxs3RuIPrDgyKnpxSYpcWuZ3p4W1jAj3baLjBHZiAjW_AdEeC-ubxfBDww187kxPchAxsalgt17EtAg0n"/>
+</div>
+<div class="flex items-center space-x-2 text-sm font-medium">
+<svg class="h-4 w-4 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" fill-rule="evenodd"></path>
+</svg>
+<span>40 Followers</span>
+</div>
+</div>
+<!-- Game Card 3 -->
+<div class="game-card flex flex-col items-center group cursor-pointer" data-purpose="game-card">
+<div class="w-full h-64 rounded-xl overflow-hidden mb-4 relative">
+<img alt="Soldier Game" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7vsKcsDTB8vRm-2lID5rXYdZ-WMXeaJAFnzu-mSyebiqHkpDJjsKUqQw23p9s--oWGkb6bSkfsvM9trHrd2R9Iyy3M-1iWT9_b3goUWwEczBCrgHEjqm8UiME4dOpKlW0coVvZupZZXplrJWMdh9s8bYLKMqHYi1KNp7JtD94hajuQSaF_BYWYLXZC5lo_FhzHVWug28m6Hn1OPX8z2DY_yKPk_yjL-lSFKNQU1zfeIZz73r2-8IV"/>
+</div>
+<div class="flex items-center space-x-2 text-sm font-medium">
+<svg class="h-4 w-4 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" fill-rule="evenodd"></path>
+</svg>
+<span>40 Followers</span>
+</div>
+</div>
+<!-- Game Card 4 -->
+<div class="game-card flex flex-col items-center group cursor-pointer" data-purpose="game-card">
+<div class="w-full h-64 rounded-xl overflow-hidden mb-4 relative">
+<img alt="Cyberpunk Game" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzQNKWD-RysW27LDUa2dLdueIrwIcVRh86WKECgXbTipwX2P0BWHV3zlLGQfN8TeUvSIAoFNUnM5ocK7aUo-UqHws31_geoMuCGEbi6gUQe8289xqanzXfpRzttLB9MZc07OtLgd5qsCL82kpiIAttZw-JzkauQszZOOv80lstjgU5Fe3ecNwoYEMhPCVT6uskxBkI_CEEAVJ--TsK3Ax1wjiAgucLN9cBKsSQJuGagI6fUkC1OOSR"/>
+</div>
+<div class="flex items-center space-x-2 text-sm font-medium">
+<svg class="h-4 w-4 text-white" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" fill-rule="evenodd"></path>
+</svg>
+<span>40 Followers</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: TrendingGamesSection -->
+<!-- BEGIN: BottomTextSection -->
+<section class="container mx-auto px-6 py-20 text-center" data-purpose="footer-text">
+<h3 class="text-2xl md:text-3xl font-semibold max-w-2xl mx-auto leading-relaxed">
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+    </h3>
+</section>
+<!-- END: BottomTextSection -->
+</body></html>

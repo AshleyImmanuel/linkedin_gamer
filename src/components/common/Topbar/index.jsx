@@ -9,7 +9,7 @@ import {
   AiOutlineMessage,
   AiOutlineBell,
 } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BsBriefcase } from "react-icons/bs";
 import { getAllUsers } from "../../../api/FirestoreAPI";
 import ProfilePopup from "../ProfilePopup";
@@ -22,6 +22,7 @@ export default function Topbar({ currentUser }) {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   let navigate = useNavigate();
+  let location = useLocation();
   const goToRoute = (route) => {
     navigate(route);
   };
@@ -90,12 +91,12 @@ export default function Topbar({ currentUser }) {
           />
           <AiOutlineHome
             size={30}
-            className="react-icon"
+            className={`react-icon ${location.pathname === "/home" ? "active" : ""}`}
             onClick={() => goToRoute("/home")}
           />
           <AiOutlineUserSwitch
             size={30}
-            className="react-icon"
+            className={`react-icon ${location.pathname === "/connections" ? "active" : ""}`}
             onClick={() => goToRoute("/connections")}
           />
           <BsBriefcase size={30} className="react-icon" />
@@ -104,7 +105,7 @@ export default function Topbar({ currentUser }) {
         </div>
       )}
       <img
-        className="user-logo"
+        className={`user-logo ${location.pathname === "/profile" ? "active" : ""}`}
         src={currentUser?.imageLink}
         alt="user"
         onClick={displayPopup}
