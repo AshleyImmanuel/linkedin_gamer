@@ -16,23 +16,26 @@
 
   .comment-input {
     height: 40px;
-    background-color: whitesmoke;
-    padding-left: 10px;
+    background-color: var(--color-surface);
+    padding-left: 15px;
     border-radius: 30px;
-    border: 1px solid #737373;
+    border: 1px solid var(--color-border);
     font-family: system-ui;
-    color: #4b4b4b;
+    color: var(--color-text);
     font-size: 16px;
+    transition: all 0.2s ease;
   }
 
   .comment-input:focus {
-    outline: 1px solid #4b4b4b;
-    color: #4b4b4b;
+    outline: none;
+    border-color: var(--color-primary);
+    color: var(--color-text);
+    box-shadow: 0 0 8px rgba(138, 46, 255, 0.25);
   }
   .add-comment-btn {
     width: 150px;
     height: 35px;
-    background-color: #0a66c2;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     color: white;
     outline: none;
     border: none;
@@ -40,43 +43,57 @@
     cursor: pointer;
     margin-top: 15px;
     margin-bottom: 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 10px rgba(255, 46, 154, 0.4);
+    }
   }
   .all-comments {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background-color: rgb(227, 227, 227);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 10px;
     position: relative;
     margin: 10px;
+    padding: 10px;
     .name {
-      color: #212121;
+      color: var(--color-text);
       text-decoration: none;
       margin-left: 10px;
       margin-top: 10px;
+      font-weight: 600;
     }
 
     .comment {
       margin-left: 10px;
-      margin-top: 0px;
+      margin-top: 5px;
+      color: var(--color-text-secondary);
     }
 
     .timestamp {
       position: absolute;
-      right: 10px;
-      top: 10px;
+      right: 15px;
+      top: 15px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
     }
   }
   .hr-line {
     margin-top: -17px;
     hr {
-      border-top: 1px solid rgb(181, 181, 181);
+      border: none;
+      border-top: 1px solid var(--color-border);
     }
   }
   p {
     font-family: Inter, sans-serif;
     font-weight: 400;
-    color: rgba(58, 58, 58, 0.835);
+    color: var(--color-text-secondary);
     font-size: 14px;
     margin-left: 5px;
   }
@@ -86,17 +103,18 @@
     align-items: center;
     margin-top: -20px;
     .blue {
-      color: #0a66c2;
+      color: var(--color-primary);
     }
 
     .black {
-      color: rgba(58, 58, 58, 0.835);
+      color: var(--color-text-secondary);
     }
     p {
       font-family: Inter, sans-serif;
       font-weight: 600;
-      color: rgba(58, 58, 58, 0.835);
+      color: var(--color-text-secondary);
       font-size: 16px;
     }
   }
 }
+

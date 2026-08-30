@@ -4,61 +4,72 @@
   align-items: center;
   flex-direction: column;
   position: relative;
+  
   .user-details {
     width: 550px;
     height: auto;
-    background-color: whitesmoke;
+    background-color: var(--color-card);
     margin-top: 100px;
-    border: 1px solid #b7b7b7;
-    border-radius: 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
     img {
       width: 100px;
       height: 100px;
       object-fit: cover;
       border-radius: 50%;
       margin-top: -60px;
-      border: 1px solid #b7b7b7;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
       padding: 1px;
     }
 
     .name {
       font-weight: 600;
       font-family: system-ui;
+      color: var(--color-text);
+      margin-top: 10px;
     }
 
     .headline {
       font-family: system-ui;
-      margin-top: -15px;
+      margin-top: -5px;
+      color: var(--color-text-secondary);
+      padding-bottom: 20px;
     }
   }
+  
   .post-status {
     width: 550px;
     height: 120px;
-    background-color: whitesmoke;
+    background-color: var(--color-card);
     margin-top: 30px;
-    border: 1px solid #b7b7b7;
-    border-radius: 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
     .post-image {
       width: 60px;
       height: 60px;
       object-fit: cover;
       border-radius: 50%;
+      border: 1px solid var(--color-border);
     }
     .open-post-modal {
       width: 80%;
       height: 50px;
       text-align: left;
-      color: rgba(84, 84, 84, 0.89);
-      background-color: whitesmoke;
+      color: var(--color-text-secondary);
+      background-color: var(--color-surface);
       outline: none;
-      border: 1px solid #b7b7b7;
+      border: 1px solid var(--color-border);
       border-radius: 30px;
       margin-left: -30px;
       cursor: pointer;
@@ -66,10 +77,14 @@
       font-weight: 600;
       font-size: 14px;
       font-family: system-ui, sans-serif;
+      transition: all 0.2s ease;
     }
 
     .open-post-modal:hover {
-      background-color: #dcdbdb;
+      background-color: var(--color-border);
+      border-color: var(--color-primary);
+      color: var(--color-text);
     }
   }
 }
+
