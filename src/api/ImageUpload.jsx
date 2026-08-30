@@ -2,6 +2,7 @@ import { storage } from "../firebaseConfig";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { editProfile } from "./FirestoreAPI";
 import { getUniqueID } from "../helpers/getUniqueId";
+import { toast } from "react-toastify";
 
 export const uploadImage = (
   file,
@@ -25,6 +26,7 @@ export const uploadImage = (
     },
     (error) => {
       console.error(error);
+      toast.error(`Error uploading image: ${error.message}`);
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((response) => {
@@ -37,8 +39,11 @@ export const uploadImage = (
   );
 };
 
-export const uploadPostImage = (file, setPostImages, setProgress) => {
-  if (!file || !file.name) return;
+export const uploadPostImage = (file, setPostImages, setProgress, onComplete) => {
+  if (!file || !file.name) {
+    if (onComplete) onComplete();
+    return;
+  }
   const postPicsRef = ref(storage, `postImages/${getUniqueID()}_${file.name}`);
   const uploadTask = uploadBytesResumable(postPicsRef, file);
 
@@ -53,11 +58,14 @@ export const uploadPostImage = (file, setPostImages, setProgress) => {
     },
     (error) => {
       console.error(error);
+      toast.error(`Error uploading image: ${error.message}`);
+      if (onComplete) onComplete();
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((response) => {
         setPostImages((prev) => [...prev, response]);
         setProgress(0);
+        if (onComplete) onComplete();
       });
     }
   );

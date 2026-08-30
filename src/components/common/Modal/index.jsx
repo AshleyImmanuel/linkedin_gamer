@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal, Progress } from "antd";
 import { AiOutlinePicture } from "react-icons/ai";
 import ReactQuill from "react-quill";
+import { toast } from "react-toastify";
 import "./index.scss";
 
 const ModalComponent = ({
@@ -19,6 +20,7 @@ const ModalComponent = ({
   setCurrentPost,
 }) => {
   const [progress, setProgress] = useState(0);
+  const [localPreviews, setLocalPreviews] = useState([]);
   return (
     <>
       <Modal
@@ -29,12 +31,14 @@ const ModalComponent = ({
           setStatus("");
           setModalOpen(false);
           setPostImages([]);
+          setLocalPreviews([]);
           setCurrentPost({});
         }}
         onCancel={() => {
           setStatus("");
           setModalOpen(false);
           setPostImages([]);
+          setLocalPreviews([]);
           setCurrentPost({});
         }}
         footer={[
@@ -42,7 +46,11 @@ const ModalComponent = ({
             onClick={isEdit ? updateStatus : sendStatus}
             key="submit"
             type="primary"
-            disabled={status.length > 0 ? false : true}
+            disabled={
+              status.replace(/<[^>]*>?/gm, "").trim().length === 0 &&
+              postImages?.length === 0 &&
+              localPreviews.length === 0
+            }
           >
             {isEdit ? "Update" : "Post"}
           </Button>,
@@ -56,15 +64,25 @@ const ModalComponent = ({
             placeholder="Share Something Useful.."
             onChange={setStatus}
           />
-          {progress === 0 || progress === 100 ? (
+          {progress === 0 ? (
             <></>
           ) : (
             <div className="progress-bar">
               <Progress type="circle" percent={progress} />
             </div>
           )}
-          {postImages?.length > 0 ? (
+          {postImages?.length > 0 || localPreviews.length > 0 ? (
             <div className="preview-images-container">
+              {localPreviews.map((image, index) => (
+                <div key={`local-${index}`} className="preview-image-wrapper">
+                  <img
+                    className="preview-image"
+                    src={image}
+                    alt={`localPreview-${index}`}
+                    style={{ opacity: 0.5 }}
+                  />
+                </div>
+              ))}
               {postImages.map((image, index) => (
                 <div key={index} className="preview-image-wrapper">
                   <img
@@ -98,9 +116,17 @@ const ModalComponent = ({
           hidden
           onChange={(event) => {
             const files = Array.from(event.target.files);
+            if (files.length > 0) {
+              toast.info(`Uploading ${files.length} image(s)...`);
+            }
             files.forEach((file) => {
-              uploadPostImage(file, setPostImages, setProgress);
+              const localUrl = URL.createObjectURL(file);
+              setLocalPreviews((prev) => [...prev, localUrl]);
+              uploadPostImage(file, setPostImages, setProgress, () => {
+                setLocalPreviews((prev) => prev.filter((url) => url !== localUrl));
+              });
             });
+            event.target.value = "";
           }}
         />
       </Modal>
