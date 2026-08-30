@@ -9,6 +9,7 @@ export default function FileUploadModal({
   uploadImage,
   currentImage,
   progress,
+  currentImageLink,
 }) {
   return (
     <div>
@@ -30,8 +31,23 @@ export default function FileUploadModal({
         ]}
       >
         <div className="image-upload-main">
-          <p>{currentImage.name}</p>
-          <label className="upload-btn" for="image-upload">
+          {currentImage && currentImage.name ? (
+            <img
+              src={URL.createObjectURL(currentImage)}
+              alt="preview"
+              className="image-preview"
+            />
+          ) : currentImageLink ? (
+            <img
+              src={currentImageLink}
+              alt="current profile"
+              className="image-preview"
+            />
+          ) : (
+            <></>
+          )}
+          <p className="file-name">{currentImage.name || "No file chosen"}</p>
+          <label className="upload-btn" htmlFor="image-upload">
             Add an Image
           </label>
           {progress === 0 ? (

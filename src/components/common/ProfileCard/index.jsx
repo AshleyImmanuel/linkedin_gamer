@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getSingleStatus, getSingleUser, updatePost } from "../../../api/FirestoreAPI";
 import PostsCard from "../PostsCard";
 import { HiOutlinePencil } from "react-icons/hi";
+import { BsPencil } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import FileUploadModal from "../FileUploadModal";
 import { uploadImage as uploadImageAPI, uploadPostImage } from "../../../api/ImageUpload";
@@ -84,6 +85,11 @@ export default function ProfileCard({ onEdit, currentUser }) {
         setModalOpen={setModalOpen}
         currentImage={currentImage}
         progress={progress}
+        currentImageLink={
+          Object.values(currentProfile).length === 0
+            ? currentUser.imageLink
+            : currentProfile?.imageLink
+        }
       />
       <div className="profile-card">
         {currentUser.id === location?.state?.id ? (
@@ -95,25 +101,36 @@ export default function ProfileCard({ onEdit, currentUser }) {
         )}
         <div className="profile-info">
           <div>
-            <img
-              className="profile-image"
-              onClick={
-                (!location?.state?.id || location?.state?.id === currentUser.id)
-                  ? () => setModalOpen(true)
-                  : undefined
-              }
-              src={
-                Object.values(currentProfile).length === 0
-                  ? currentUser.imageLink
-                  : currentProfile?.imageLink
-              }
-              alt="profile-image"
-              style={{
-                cursor: (!location?.state?.id || location?.state?.id === currentUser.id)
-                  ? "pointer"
-                  : "default"
-              }}
-            />
+            <div className="profile-image-container">
+              <img
+                className="profile-image"
+                onClick={
+                  (!location?.state?.id || location?.state?.id === currentUser.id)
+                    ? () => setModalOpen(true)
+                    : undefined
+                }
+                src={
+                  Object.values(currentProfile).length === 0
+                    ? currentUser.imageLink
+                    : currentProfile?.imageLink
+                }
+                alt="profile-image"
+                style={{
+                  cursor: (!location?.state?.id || location?.state?.id === currentUser.id)
+                    ? "pointer"
+                    : "default"
+                }}
+              />
+              {(!location?.state?.id || location?.state?.id === currentUser.id) ? (
+                <BsPencil
+                  className="edit-image-icon"
+                  onClick={() => setModalOpen(true)}
+                  size={22}
+                />
+              ) : (
+                <></>
+              )}
+            </div>
             <h3 className="userName">
               {Object.values(currentProfile).length === 0
                 ? currentUser.name
@@ -182,31 +199,6 @@ export default function ProfileCard({ onEdit, currentUser }) {
         ) : (
           <></>
         )}
-      </div>
-
-      <ModalComponent
-        status={postStatusText}
-        setStatus={setPostStatusText}
-        modalOpen={editModalOpen}
-        setModalOpen={setEditModalOpen}
-        sendStatus={() => {}}
-        isEdit={isEdit}
-        updateStatus={updateStatus}
-        uploadPostImage={uploadPostImage}
-        postImages={postImages}
-        setPostImages={setPostImages}
-        setCurrentPost={setCurrentPost}
-        currentPost={currentPost}
-      />
-
-      <div className="post-status-main">
-        {allStatuses?.map((posts) => {
-          return (
-            <div key={posts.id}>
-              <PostsCard posts={posts} getEditData={getEditData} />
-            </div>
-          );
-        })}
       </div>
     </>
   );
