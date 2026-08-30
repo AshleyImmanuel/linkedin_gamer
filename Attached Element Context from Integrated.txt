@@ -1,0 +1,54 @@
+Attached Element Context from Integrated Browser
+
+Element: span
+
+URL: http://localhost:5173/home
+
+HTML Path: div > div.ant-modal-root.css-dev-only-do-not-override-diro6f > div.ant-modal-wrap.ant-modal-centered > div.ant-modal.css-dev-only-do-not-override-diro6f > div.ant-modal-content > div.ant-modal-footer > button.ant-btn.css-dev-only-do-not-override-diro6f.ant-btn-primary > span
+
+Outer HTML:
+```html
+<span>Update</span>
+```
+
+Dimensions:
+- top: 387px
+- left: 770px
+- width: 45px
+- height: 22px
+
+CSS:
+```css
+:where(.css-dev-only-do-not-override-diro6f).ant-btn >span { display:inline-block; }
+
+/* Inherited */
+:where(.css-dev-only-do-not-override-diro6f)[class^="ant-btn"], :where(.css-dev-only-do-not-override-diro6f)[class*=" ant-btn"] { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'; font-size:14px }
+:where(.css-dev-only-do-not-override-diro6f).ant-btn { font-weight:400; white-space:nowrap; text-align:center; cursor:pointer; line-height:1.5714285714285714; color:rgba(0, 0, 0, 0.88) }
+:where(.css-dev-only-do-not-override-diro6f).ant-btn { font-size:14px }
+:where(.css-dev-only-do-not-override-diro6f).ant-btn-primary { color:#fff }
+:where(.css-dev-only-do-not-override-diro6f).ant-btn-primary:disabled { cursor:not-allowed; color:rgba(0, 0, 0, 0.25) }
+:where(.css-dev-only-do-not-override-diro6f).ant-modal .ant-modal-footer { text-align:end }
+:where(.css-dev-only-do-not-override-diro6f).ant-modal { color:rgba(0, 0, 0, 0.88); font-size:14px; line-height:1.5714285714285714; list-style:none; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji' }
+:where(.css-dev-only-do-not-override-diro6f).ant-modal-root .ant-modal-centered .ant-modal { text-align:start }
+:where(.css-dev-only-do-not-override-diro6f).ant-modal-root .ant-modal-centered { text-align:center }
+:root { font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; line-height: 1.5; font-weight: 400; color: #212121 }
+
+/* Resolved values */
+color: rgba(0, 0, 0, 0.25);
+cursor: not-allowed;
+display: inline-block;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+font-size: 14px;
+font-weight: 400;
+height: 22px;
+letter-spacing: normal /*UA*/;
+line-height: 22px;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+text-align: center;
+text-indent: 0px /*UA*/;
+text-transform: none /*UA*/;
+width: 45.2875px;
+word-spacing: 0px /*UA*/;
+```

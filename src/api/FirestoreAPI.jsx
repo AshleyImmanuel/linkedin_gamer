@@ -11,6 +11,7 @@ import {
   deleteDoc,
   orderBy,
   serverTimestamp,
+  deleteField,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 
@@ -169,23 +170,29 @@ export const getComments = (postId, setComments) => {
   }
 };
 
-export const updatePost = (id, status, postImages) => {
+export const updatePost = async (id, status, postImages) => {
   let docToUpdate = doc(postsRef, id);
   try {
-    updateDoc(docToUpdate, { status, postImages });
+    await updateDoc(docToUpdate, { 
+      status, 
+      postImages,
+      postImage: deleteField()
+    });
     toast.success("Post has been updated!");
   } catch (err) {
-    console.log(err);
+    console.error("Update Post Error:", err);
+    toast.error(`Failed to update post: ${err.message}`);
   }
 };
 
-export const deletePost = (id) => {
+export const deletePost = async (id) => {
   let docToDelete = doc(postsRef, id);
   try {
-    deleteDoc(docToDelete);
+    await deleteDoc(docToDelete);
     toast.success("Post has been Deleted!");
   } catch (err) {
-    console.log(err);
+    console.error("Delete Post Error:", err);
+    toast.error(`Failed to delete post: ${err.message}`);
   }
 };
 

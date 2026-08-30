@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getSingleStatus, getSingleUser } from "../../../api/FirestoreAPI";
+import { getSingleStatus, getSingleUser, updatePost } from "../../../api/FirestoreAPI";
 import PostsCard from "../PostsCard";
 import { HiOutlinePencil } from "react-icons/hi";
 import { useLocation } from "react-router-dom";
 import FileUploadModal from "../FileUploadModal";
-import { uploadImage as uploadImageAPI } from "../../../api/ImageUpload";
+import { uploadImage as uploadImageAPI, uploadPostImage } from "../../../api/ImageUpload";
+import ModalComponent from "../Modal";
 import "./index.scss";
 
 export default function ProfileCard({ onEdit, currentUser }) {
@@ -14,6 +15,32 @@ export default function ProfileCard({ onEdit, currentUser }) {
   const [currentImage, setCurrentImage] = useState({});
   const [progress, setProgress] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Post Edit Modal States
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [postStatusText, setPostStatusText] = useState("");
+  const [currentPost, setCurrentPost] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
+  const [postImages, setPostImages] = useState([]);
+  const [postProgress, setPostProgress] = useState(0);
+
+  const getEditData = (posts) => {
+    setEditModalOpen(true);
+    setPostStatusText(posts?.status);
+    setCurrentPost(posts);
+    setPostImages(posts?.postImages || (posts?.postImage ? [posts.postImage] : []));
+    setIsEdit(true);
+  };
+
+  const updateStatus = () => {
+    updatePost(currentPost.id, postStatusText, postImages);
+    setEditModalOpen(false);
+    setPostStatusText("");
+    setPostImages([]);
+    setCurrentPost({});
+    setIsEdit(false);
+  };
+
   const getImage = (event) => {
     if (event.target.files && event.target.files[0]) {
       setCurrentImage(event.target.files[0]);
@@ -157,11 +184,26 @@ export default function ProfileCard({ onEdit, currentUser }) {
         )}
       </div>
 
+      <ModalComponent
+        status={postStatusText}
+        setStatus={setPostStatusText}
+        modalOpen={editModalOpen}
+        setModalOpen={setEditModalOpen}
+        sendStatus={() => {}}
+        isEdit={isEdit}
+        updateStatus={updateStatus}
+        uploadPostImage={uploadPostImage}
+        postImages={postImages}
+        setPostImages={setPostImages}
+        setCurrentPost={setCurrentPost}
+        currentPost={currentPost}
+      />
+
       <div className="post-status-main">
         {allStatuses?.map((posts) => {
           return (
             <div key={posts.id}>
-              <PostsCard posts={posts} />
+              <PostsCard posts={posts} getEditData={getEditData} />
             </div>
           );
         })}

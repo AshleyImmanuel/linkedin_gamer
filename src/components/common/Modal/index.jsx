@@ -24,7 +24,7 @@ const ModalComponent = ({
   return (
     <>
       <Modal
-        title="Create a post"
+        title={isEdit ? "Edit post" : "Create a post"}
         centered
         open={modalOpen}
         onOk={() => {
@@ -47,9 +47,10 @@ const ModalComponent = ({
             key="submit"
             type="primary"
             disabled={
-              status.replace(/<[^>]*>?/gm, "").trim().length === 0 &&
-              postImages?.length === 0 &&
-              localPreviews.length === 0
+              localPreviews.length > 0 || (
+                status.replace(/<[^>]*>?/gm, "").trim().length === 0 &&
+                postImages?.length === 0
+              )
             }
           >
             {isEdit ? "Update" : "Post"}
@@ -106,9 +107,11 @@ const ModalComponent = ({
             <></>
           )}
         </div>
-        <label htmlFor="pic-upload">
-          <AiOutlinePicture size={35} className="picture-icon" />
-        </label>
+        <div className="modal-actions">
+          <label htmlFor="pic-upload">
+            <AiOutlinePicture size={35} className="picture-icon" />
+          </label>
+        </div>
         <input
           id="pic-upload"
           type="file"
