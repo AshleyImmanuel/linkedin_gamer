@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getSingleStatus, getSingleUser, updatePost } from "../../../api/FirestoreAPI";
+import { getSingleStatus, getSingleUser, updatePost, getAllUsers } from "../../../api/FirestoreAPI";
 import PostsCard from "../PostsCard";
 import { HiOutlinePencil } from "react-icons/hi";
 import { BsPencil } from "react-icons/bs";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import FileUploadModal from "../FileUploadModal";
 import { uploadImage as uploadImageAPI, uploadPostImage } from "../../../api/ImageUpload";
 import ModalComponent from "../Modal";
@@ -11,11 +11,13 @@ import "./index.scss";
 
 export default function ProfileCard({ onEdit, currentUser }) {
   let location = useLocation();
+  let { id } = useParams();
   const [allStatuses, setAllStatus] = useState([]);
   const [currentProfile, setCurrentProfile] = useState({});
   const [currentImage, setCurrentImage] = useState({});
   const [progress, setProgress] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
 
   // Post Edit Modal States
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -34,7 +36,7 @@ export default function ProfileCard({ onEdit, currentUser }) {
   };
 
   const updateStatus = () => {
-    updatePost(currentPost.id, postStatusText, postImages);
+    updatePost(currentPost.id, postStatusText, postImages, currentUser.id);
     setEditModalOpen(false);
     setPostStatusText("");
     setPostImages([]);
@@ -61,20 +63,40 @@ export default function ProfileCard({ onEdit, currentUser }) {
   useEffect(() => {
     let unsubscribeStatus;
     let unsubscribeUser;
+    let unsubscribeAllUsers;
 
-    if (location?.state?.id) {
-      unsubscribeStatus = getSingleStatus(setAllStatus, location?.state?.id);
+    // Determine which user's posts to show - priority: URL param > location state > current user
+    const targetUserId = id || location?.state?.id || currentUser?.id;
+    const targetEmail = location?.state?.email;
+
+    // Only proceed if we have a valid user ID
+    if (!targetUserId) {
+      return;
     }
 
-    if (location?.state?.email) {
-      unsubscribeUser = getSingleUser(setCurrentProfile, location?.state?.email);
+    unsubscribeStatus = getSingleStatus(setAllStatus, targetUserId);
+
+    if (targetEmail) {
+      unsubscribeUser = getSingleUser(setCurrentProfile, targetEmail);
+    } else if (id) {
+      // If viewing another user via URL param, fetch all users to find the target
+      unsubscribeAllUsers = getAllUsers((users) => {
+        const targetUser = users.find(user => user.id === id);
+        if (targetUser) {
+          setCurrentProfile(targetUser);
+        }
+      });
+    } else if (!location?.state?.id) {
+      // Viewing own profile without state, use current user data
+      setCurrentProfile(currentUser);
     }
 
     return () => {
       if (unsubscribeStatus) unsubscribeStatus();
       if (unsubscribeUser) unsubscribeUser();
+      if (unsubscribeAllUsers) unsubscribeAllUsers();
     };
-  }, [location?.state?.id, location?.state?.email]);
+  }, [id, location?.state?.id, location?.state?.email, currentUser?.id, currentUser?.email]);
 
   return (
     <>
@@ -200,6 +222,38 @@ export default function ProfileCard({ onEdit, currentUser }) {
           <></>
         )}
       </div>
+      
+      {/* My Uploads Section */}
+      <center>
+      <div className="my-uploads-section">
+        <h3 className="section-title">My Uploads</h3>
+        {allStatuses.length > 0 ? (
+          allStatuses.map((posts) => (
+            <div key={posts.id}>
+              <PostsCard posts={posts} getEditData={getEditData} />
+            </div>
+          ))
+        ) : (
+          <p className="no-posts-message">No posts yet. Start sharing!</p>
+        )}
+      </div>
+      </center>
+      
+      {/* Post Edit Modal */}
+      <ModalComponent
+        setStatus={setPostStatusText}
+        modalOpen={editModalOpen}
+        setModalOpen={setEditModalOpen}
+        status={postStatusText}
+        sendStatus={updateStatus}
+        isEdit={isEdit} 
+        updateStatus={updateStatus}
+        uploadPostImage={uploadPostImage}
+        postImages={postImages}
+        setPostImages={setPostImages}
+        setCurrentPost={setCurrentPost}
+        currentPost={currentPost}
+      />
     </>
   );
 }

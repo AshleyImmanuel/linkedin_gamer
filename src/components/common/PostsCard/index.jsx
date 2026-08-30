@@ -6,7 +6,6 @@ import {
   getCurrentUser,
   getAllUsers,
   deletePost,
-  getConnections,
 } from "../../../api/FirestoreAPI";
 import LikeButton from "../LikeButton";
 import "./index.scss";
@@ -18,7 +17,7 @@ export default function PostsCard({ posts, id, getEditData }) {
   const [imageModal, setImageModal] = useState(false);
   const [postImage, setPostImage] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isConnected, setIsConnected] = useState(false);
+  
   useEffect(() => {
     const unsubscribeUser = getCurrentUser(setCurrentUser);
     const unsubscribeAllUsers = getAllUsers(setAllUsers);
@@ -28,14 +27,7 @@ export default function PostsCard({ posts, id, getEditData }) {
     };
   }, []);
 
-  useEffect(() => {
-    const unsubscribeConnections = getConnections(currentUser.id, posts.userID, setIsConnected);
-    return () => {
-      if (unsubscribeConnections) unsubscribeConnections();
-    };
-  }, [currentUser.id, posts.userID]);
-
-  return isConnected || currentUser.id === posts.userID ? (
+  return (
     <div className="posts-card" key={id}>
       <div className="post-image-wrapper">
         {currentUser.id === posts.userID ? (
@@ -48,7 +40,7 @@ export default function PostsCard({ posts, id, getEditData }) {
             <BsTrash
               size={20}
               className="action-icon"
-              onClick={() => deletePost(posts.id)}
+              onClick={() => deletePost(posts.id, currentUser.id)}
             />
           </div>
         ) : (
@@ -67,11 +59,15 @@ export default function PostsCard({ posts, id, getEditData }) {
         <div>
           <p
             className="name"
-            onClick={() =>
-              navigate("/profile", {
-                state: { id: posts?.userID, email: posts.userEmail },
-              })
-            }
+            onClick={() => {
+              if (posts?.userID === currentUser.id) {
+                navigate("/profile");
+              } else {
+                navigate(`/user/${posts?.userID}`, {
+                  state: { id: posts?.userID, email: posts.userEmail },
+                });
+              }
+            }}
           >
             {allUsers.filter((user) => user.id === posts.userID)[0]?.name}
           </p>
@@ -157,7 +153,5 @@ export default function PostsCard({ posts, id, getEditData }) {
         />
       </Modal>
     </div>
-  ) : (
-    <></>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { postStatus, getStatus, updatePost } from "../../../api/FirestoreAPI";
+import { postStatus, getFeedPosts, updatePost } from "../../../api/FirestoreAPI";
 import { getCurrentTimeStamp } from "../../../helpers/useMoment";
 import ModalComponent from "../Modal";
 import { uploadPostImage } from "../../../api/ImageUpload";
@@ -14,6 +14,7 @@ export default function PostStatus({ currentUser }) {
   const [currentPost, setCurrentPost] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [postImages, setPostImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const sendStatus = async () => {
     let object = {
@@ -41,7 +42,7 @@ export default function PostStatus({ currentUser }) {
   };
 
   const updateStatus = () => {
-    updatePost(currentPost.id, status, postImages);
+    updatePost(currentPost.id, status, postImages, currentUser.id);
     setModalOpen(false);
     setStatus("");
     setPostImages([]);
@@ -49,9 +50,15 @@ export default function PostStatus({ currentUser }) {
   };
 
   useEffect(() => {
-    const unsubscribe = getStatus(setAllStatus);
+    if (!currentUser?.id) {
+      setLoading(false);
+      return;
+    }
+    
+    const unsubscribe = getFeedPosts(currentUser.id, setAllStatus);
+    setLoading(false);
     return () => unsubscribe();
-  }, []);
+  }, [currentUser?.id]);
 
   return (
     <div className="post-status-main">
@@ -92,14 +99,25 @@ export default function PostStatus({ currentUser }) {
         currentPost={currentPost}
       />
 
-      <div>
-        {allStatuses.map((posts) => {
-          return (
-            <div key={posts.id}>
-              <PostsCard posts={posts} getEditData={getEditData} />
+      <div className="feed-container">
+        {loading ? (
+          <div className="feed-loading">Loading feed...</div>
+        ) : allStatuses.length > 0 ? (
+          allStatuses.map((posts) => {
+            return (
+              <div key={posts.id}>
+                <PostsCard posts={posts} getEditData={getEditData} />
+              </div>
+            );
+          })
+        ) : (
+          <div className="empty-feed">
+            <div className="empty-feed-content">
+              <h3>Your feed is empty</h3>
+              <p>Connect with other users to see their posts here, or start by creating your own posts!</p>
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
     </div>
   );
