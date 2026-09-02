@@ -32,7 +32,7 @@ export default function Topbar({ currentUser }) {
   };
 
   const openUser = (user) => {
-    navigate("/profile", {
+    navigate(`/user/${user.id}`, {
       state: {
         id: user.id,
         email: user.email,
@@ -64,8 +64,12 @@ export default function Topbar({ currentUser }) {
   }, [searchInput]);
 
   useEffect(() => {
-    getAllUsers(setUsers);
+    const unsubscribe = getAllUsers(setUsers);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
+
   return (
     <div className="topbar-main">
       {popupVisible ? (
@@ -76,7 +80,13 @@ export default function Topbar({ currentUser }) {
         <></>
       )}
 
-      <img className="linkedin-logo" src={CredoraLogo} alt="CredoraLogo" />
+      <img
+        className="linkedin-logo"
+        src={CredoraLogo}
+        alt="CredoraLogo"
+        title="Credora Home"
+        onClick={() => goToRoute("/home")}
+      />
       {isSearch ? (
         <SearchUsers
           setIsSearch={setIsSearch}
@@ -87,27 +97,31 @@ export default function Topbar({ currentUser }) {
           <AiOutlineSearch
             size={30}
             className="react-icon"
+            title="Search"
             onClick={() => setIsSearch(true)}
           />
           <AiOutlineHome
             size={30}
             className={`react-icon ${location.pathname === "/home" ? "active" : ""}`}
+            title="Home Feed"
             onClick={() => goToRoute("/home")}
           />
           <AiOutlineUserSwitch
             size={30}
-            className={`react-icon ${location.pathname === "/connections" ? "active" : ""}`}
-            onClick={() => goToRoute("/connections")}
+            className={`react-icon ${location.pathname === "/users" || location.pathname === "/connections" ? "active" : ""}`}
+            title="Users Directory"
+            onClick={() => goToRoute("/users")}
           />
-          <BsBriefcase size={30} className="react-icon" />
-          <AiOutlineMessage size={30} className="react-icon" />
-          <AiOutlineBell size={30} className="react-icon" />
+          <BsBriefcase size={30} className="react-icon" title="Jobs" />
+          <AiOutlineMessage size={30} className="react-icon" title="Messages" />
+          <AiOutlineBell size={30} className="react-icon" title="Notifications" />
         </div>
       )}
       <img
         className={`user-logo ${location.pathname === "/profile" ? "active" : ""}`}
-        src={currentUser?.imageLink}
+        src={currentUser?.imageLink || user}
         alt="user"
+        title="My Profile"
         onClick={displayPopup}
       />
 
@@ -118,10 +132,14 @@ export default function Topbar({ currentUser }) {
           {filteredUsers.length === 0 ? (
             <div className="search-inner">No Results Found..</div>
           ) : (
-            filteredUsers.map((user) => (
-              <div className="search-inner" onClick={() => openUser(user)}>
-                <img src={user.imageLink} />
-                <p className="name">{user.name}</p>
+            filteredUsers.map((userItem) => (
+              <div
+                key={userItem.id}
+                className="search-inner"
+                onClick={() => openUser(userItem)}
+              >
+                <img src={userItem.imageLink || user} alt={userItem.name} />
+                <p className="name">{userItem.name || "User"}</p>
               </div>
             ))
           )}

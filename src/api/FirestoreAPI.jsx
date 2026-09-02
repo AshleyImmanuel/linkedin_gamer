@@ -15,6 +15,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 let postsRef = collection(firestore, "posts");
 let userRef = collection(firestore, "users");
@@ -22,110 +23,58 @@ let likeRef = collection(firestore, "likes");
 let commentsRef = collection(firestore, "comments");
 let connectionRef = collection(firestore, "connections");
 
-export const postStatus = (object) => {
-  addDoc(postsRef, object)
-    .then(() => {
-      toast.success("Post has been added successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+export const getPostTimestamp = (post) => {
+  if (post?.createdAt) {
+    if (typeof post.createdAt === "number") return post.createdAt;
+    if (typeof post.createdAt.toMillis === "function") return post.createdAt.toMillis();
+    if (typeof post.createdAt.toDate === "function") return post.createdAt.toDate().getTime();
+    if (post.createdAt.seconds) return post.createdAt.seconds * 1000;
+    const m = moment(post.createdAt);
+    if (m.isValid()) return m.valueOf();
+  }
+  if (post?.timeStamp) {
+    const m = moment(post.timeStamp, ["LLL", "LL", "YYYY-MM-DD HH:mm:ss", "MMMM D, YYYY h:mm A", moment.ISO_8601], true);
+    if (m.isValid()) return m.valueOf();
+    const fallback = moment(post.timeStamp);
+    if (fallback.isValid()) return fallback.valueOf();
+  }
+  return 0;
+};
+
+export const postStatus = async (object) => {
+  try {
+    const postData = {
+      ...object,
+      createdAt: object.createdAt || Date.now(),
+    };
+    await addDoc(postsRef, postData);
+    toast.success("Post has been added successfully");
+  } catch (err) {
+    console.error("Error adding post:", err);
+    toast.error("Failed to add post");
+  }
 };
 
 export const getStatus = (setAllStatus) => {
-  const q = query(postsRef, orderBy("timeStamp"));
-  return onSnapshot(q, (response) => {
-    setAllStatus(
-      response.docs.map((docs) => {
+  return onSnapshot(
+    postsRef,
+    (response) => {
+      const posts = response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
-      })
-    );
-  });
+      });
+      posts.sort((a, b) => getPostTimestamp(b) - getPostTimestamp(a));
+      setAllStatus(posts);
+    },
+    (err) => {
+      console.error("Error fetching feed posts:", err);
+      setAllStatus([]);
+    }
+  );
 };
 
 export const getFeedPosts = (userId, setAllStatus) => {
-  // Get posts from user's connections (both directions) and their own posts
-  const connectionsQuery1 = query(
-    connectionRef,
-    where("userId", "==", userId)
-  );
-  
-  const connectionsQuery2 = query(
-    connectionRef,
-    where("targetId", "==", userId)
-  );
-  
-  const unsubscribe1 = onSnapshot(connectionsQuery1, (snapshot1) => {
-    const unsubscribe2 = onSnapshot(connectionsQuery2, (snapshot2) => {
-      // Get users where current user is the userId (they initiated connection)
-      const connectedUserIds1 = snapshot1.docs.map(doc => doc.data().targetId).filter(id => id);
-      // Get users where current user is the targetId (they were connected to)
-      const connectedUserIds2 = snapshot2.docs.map(doc => doc.data().userId).filter(id => id);
-      
-      // Combine both directions and remove duplicates
-      const allConnectedUserIds = [...new Set([...connectedUserIds1, ...connectedUserIds2])];
-      // Include current user's ID to show their own posts in feed
-      const allUserIds = [...allConnectedUserIds, userId].filter(id => id);
-      
-      console.log("Feed Debug - Connected User IDs:", allConnectedUserIds);
-      console.log("Feed Debug - All User IDs for posts:", allUserIds);
-      console.log("Feed Debug - Snapshot1 docs:", snapshot1.docs.length);
-      console.log("Feed Debug - Snapshot2 docs:", snapshot2.docs.length);
-      
-      if (!allUserIds || allUserIds.length === 0) {
-        console.log("Feed Debug - No connected users, showing all posts as fallback");
-        // Fallback: show all posts if no connections
-        const allPostsQuery = query(postsRef, orderBy("timeStamp", "desc"));
-        const unsubscribeAllPosts = onSnapshot(allPostsQuery, (response) => {
-          console.log("Feed Debug - All posts found:", response.docs.length);
-          setAllStatus(
-            response.docs.map((docs) => {
-              return { ...docs.data(), id: docs.id };
-            })
-          );
-        });
-        return () => {
-          if (unsubscribeAllPosts) unsubscribeAllPosts();
-          if (unsubscribe2) unsubscribe2();
-        };
-      }
-      
-      // Firebase 'in' queries support up to 10 values
-      const userIdsToQuery = allUserIds.length > 10 ? allUserIds.slice(0, 10) : allUserIds;
-      
-      try {
-        // Fetch posts from all connected users
-        const postsQuery = query(
-          postsRef,
-          where("userID", "in", userIdsToQuery),
-          orderBy("timeStamp", "desc")
-        );
-        
-        const unsubscribePosts = onSnapshot(postsQuery, (response) => {
-          console.log("Feed Debug - Posts found:", response.docs.length);
-          setAllStatus(
-            response.docs.map((docs) => {
-              return { ...docs.data(), id: docs.id };
-            })
-          );
-        });
-        
-        return () => {
-          if (unsubscribePosts) unsubscribePosts();
-          if (unsubscribe2) unsubscribe2();
-        };
-      } catch (error) {
-        console.error("Error fetching feed posts:", error);
-        setAllStatus([]);
-      }
-    });
-    
-    return () => {
-      if (unsubscribe2) unsubscribe2();
-    };
-  });
-  
-  return unsubscribe1;
+  // Return the public community feed sorted with newest posts first
+  return getStatus(setAllStatus);
 };
 
 export const getAllUsers = (setAllUsers) => {
@@ -140,13 +89,20 @@ export const getAllUsers = (setAllUsers) => {
 
 export const getSingleStatus = (setAllStatus, id) => {
   const singlePostQuery = query(postsRef, where("userID", "==", id));
-  return onSnapshot(singlePostQuery, (response) => {
-    setAllStatus(
-      response.docs.map((docs) => {
+  return onSnapshot(
+    singlePostQuery,
+    (response) => {
+      const posts = response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
-      })
-    );
-  });
+      });
+      posts.sort((a, b) => getPostTimestamp(b) - getPostTimestamp(a));
+      setAllStatus(posts);
+    },
+    (err) => {
+      console.error("Error fetching user posts:", err);
+      setAllStatus([]);
+    }
+  );
 };
 
 export const getSingleUser = (setCurrentUser, email) => {

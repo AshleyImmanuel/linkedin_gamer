@@ -1,36 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Modal, Carousel } from "antd";
+import { Modal, Carousel } from "antd";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import {
   getCurrentUser,
-  getAllUsers,
   deletePost,
 } from "../../../api/FirestoreAPI";
 import LikeButton from "../LikeButton";
+import userIcon from "../../../assets/user.png";
 import "./index.scss";
 
-export default function PostsCard({ posts, id, getEditData }) {
+export default function PostsCard({ posts, id, getEditData, currentUser: currentUserProp }) {
   let navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState({});
-  const [allUsers, setAllUsers] = useState([]);
+  const [currentUserState, setCurrentUser] = useState({});
   const [imageModal, setImageModal] = useState(false);
   const [postImage, setPostImage] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const currentUser = currentUserProp || currentUserState;
   
   useEffect(() => {
-    const unsubscribeUser = getCurrentUser(setCurrentUser);
-    const unsubscribeAllUsers = getAllUsers(setAllUsers);
+    let unsubscribeUser;
+    if (!currentUserProp?.id) {
+      unsubscribeUser = getCurrentUser(setCurrentUser);
+    }
     return () => {
-      unsubscribeUser();
-      unsubscribeAllUsers();
+      if (unsubscribeUser) unsubscribeUser();
     };
-  }, []);
+  }, [currentUserProp?.id]);
+
+  const authorName = posts?.userName || "User";
+  const authorHeadline = posts?.userHeadline || "";
+  const authorImage = posts?.userImageLink || userIcon;
+
+  const navigateToAuthorProfile = () => {
+    if (posts?.userID && posts?.userID === currentUser?.id) {
+      navigate("/profile");
+    } else if (posts?.userID) {
+      navigate(`/user/${posts?.userID}`, {
+        state: { id: posts?.userID, email: posts?.userEmail },
+      });
+    }
+  };
 
   return (
     <div className="posts-card" key={id}>
       <div className="post-image-wrapper">
-        {currentUser.id === posts.userID ? (
+        {currentUser?.id === posts.userID ? (
           <div className="action-container">
             <BsPencil
               size={20}
@@ -50,30 +66,18 @@ export default function PostsCard({ posts, id, getEditData }) {
         <img
           alt="profile-image"
           className="profile-image"
-          src={
-            allUsers
-              .filter((item) => item.id === posts.userID)
-              .map((item) => item.imageLink)[0]
-          }
+          src={authorImage}
+          onClick={navigateToAuthorProfile}
+          style={{ cursor: "pointer" }}
         />
         <div>
           <p
             className="name"
-            onClick={() => {
-              if (posts?.userID === currentUser.id) {
-                navigate("/profile");
-              } else {
-                navigate(`/user/${posts?.userID}`, {
-                  state: { id: posts?.userID, email: posts.userEmail },
-                });
-              }
-            }}
+            onClick={navigateToAuthorProfile}
           >
-            {allUsers.filter((user) => user.id === posts.userID)[0]?.name}
+            {authorName}
           </p>
-          <p className="headline">
-            {allUsers.filter((user) => user.id === posts.userID)[0]?.headline}
-          </p>
+          {authorHeadline && <p className="headline">{authorHeadline}</p>}
           <p className="timestamp">{posts.timeStamp}</p>
         </div>
       </div>

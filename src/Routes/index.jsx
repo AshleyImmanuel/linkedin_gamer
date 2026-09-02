@@ -30,4 +30,8 @@ export const router = createBrowserRouter([
     path: "/connections",
     element: <ConnectionLayout />,
   },
+  {
+    path: "/users",
+    element: <ConnectionLayout />,
+  },
 ]);

@@ -7,6 +7,7 @@ import { useLocation, useParams } from "react-router-dom";
 import FileUploadModal from "../FileUploadModal";
 import { uploadImage as uploadImageAPI, uploadPostImage } from "../../../api/ImageUpload";
 import ModalComponent from "../Modal";
+import userIcon from "../../../assets/user.png";
 import "./index.scss";
 
 export default function ProfileCard({ onEdit, currentUser }) {
@@ -26,6 +27,12 @@ export default function ProfileCard({ onEdit, currentUser }) {
   const [isEdit, setIsEdit] = useState(false);
   const [postImages, setPostImages] = useState([]);
   const [postProgress, setPostProgress] = useState(0);
+
+  const isOwnProfile = Boolean(
+    currentUser?.id &&
+      ((!id && (!location?.state?.id || location?.state?.id === currentUser?.id)) ||
+        id === currentUser?.id)
+  );
 
   const getEditData = (posts) => {
     setEditModalOpen(true);
@@ -49,7 +56,7 @@ export default function ProfileCard({ onEdit, currentUser }) {
       setCurrentImage(event.target.files[0]);
     }
   };
-  console.log(currentProfile);
+
   const uploadImage = () => {
     uploadImageAPI(
       currentImage,
@@ -98,6 +105,21 @@ export default function ProfileCard({ onEdit, currentUser }) {
     };
   }, [id, location?.state?.id, location?.state?.email, currentUser?.id, currentUser?.email]);
 
+  const displayedImage =
+    (Object.values(currentProfile).length === 0
+      ? currentUser?.imageLink
+      : currentProfile?.imageLink) || userIcon;
+
+  const displayedName =
+    Object.values(currentProfile).length === 0
+      ? currentUser?.name
+      : currentProfile?.name || "User";
+
+  const displayedHeadline =
+    Object.values(currentProfile).length === 0
+      ? currentUser?.headline
+      : currentProfile?.headline;
+
   return (
     <>
       <FileUploadModal
@@ -107,14 +129,10 @@ export default function ProfileCard({ onEdit, currentUser }) {
         setModalOpen={setModalOpen}
         currentImage={currentImage}
         progress={progress}
-        currentImageLink={
-          Object.values(currentProfile).length === 0
-            ? currentUser.imageLink
-            : currentProfile?.imageLink
-        }
+        currentImageLink={displayedImage}
       />
       <div className="profile-card">
-        {currentUser.id === location?.state?.id ? (
+        {isOwnProfile ? (
           <div className="edit-btn">
             <HiOutlinePencil className="edit-icon" onClick={onEdit} />
           </div>
@@ -126,24 +144,14 @@ export default function ProfileCard({ onEdit, currentUser }) {
             <div className="profile-image-container">
               <img
                 className="profile-image"
-                onClick={
-                  (!location?.state?.id || location?.state?.id === currentUser.id)
-                    ? () => setModalOpen(true)
-                    : undefined
-                }
-                src={
-                  Object.values(currentProfile).length === 0
-                    ? currentUser.imageLink
-                    : currentProfile?.imageLink
-                }
+                onClick={isOwnProfile ? () => setModalOpen(true) : undefined}
+                src={displayedImage}
                 alt="profile-image"
                 style={{
-                  cursor: (!location?.state?.id || location?.state?.id === currentUser.id)
-                    ? "pointer"
-                    : "default"
+                  cursor: isOwnProfile ? "pointer" : "default",
                 }}
               />
-              {(!location?.state?.id || location?.state?.id === currentUser.id) ? (
+              {isOwnProfile ? (
                 <BsPencil
                   className="edit-image-icon"
                   onClick={() => setModalOpen(true)}
@@ -153,16 +161,8 @@ export default function ProfileCard({ onEdit, currentUser }) {
                 <></>
               )}
             </div>
-            <h3 className="userName">
-              {Object.values(currentProfile).length === 0
-                ? currentUser.name
-                : currentProfile?.name}
-            </h3>
-            <p className="heading">
-              {Object.values(currentProfile).length === 0
-                ? currentUser.headline
-                : currentProfile?.headline}
-            </p>
+            <h3 className="userName">{displayedName}</h3>
+            <p className="heading">{displayedHeadline}</p>
             {(currentUser.city || currentUser.country) &&
             (currentProfile?.city || currentProfile?.country) ? (
               <p className="location">
@@ -226,15 +226,19 @@ export default function ProfileCard({ onEdit, currentUser }) {
       {/* My Uploads Section */}
       <center>
       <div className="my-uploads-section">
-        <h3 className="section-title">My Uploads</h3>
+        <h3 className="section-title">
+          {isOwnProfile ? "My Uploads" : `${displayedName}'s Posts`}
+        </h3>
         {allStatuses.length > 0 ? (
           allStatuses.map((posts) => (
             <div key={posts.id}>
-              <PostsCard posts={posts} getEditData={getEditData} />
+              <PostsCard posts={posts} getEditData={getEditData} currentUser={currentUser} />
             </div>
           ))
         ) : (
-          <p className="no-posts-message">No posts yet. Start sharing!</p>
+          <p className="no-posts-message">
+            {isOwnProfile ? "No posts yet. Start sharing!" : "No posts yet."}
+          </p>
         )}
       </div>
       </center>
