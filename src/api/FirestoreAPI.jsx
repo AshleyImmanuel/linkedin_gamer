@@ -72,9 +72,167 @@ export const getStatus = (setAllStatus) => {
   );
 };
 
-export const getFeedPosts = (userId, setAllStatus) => {
-  // Return the public community feed sorted with newest posts first
-  return getStatus(setAllStatus);
+export const calculatePostScore = (
+  post,
+  currentUserId,
+  likesMap,
+  commentsMap,
+  connectedUserIds
+) => {
+  const postTime = getPostTimestamp(post);
+
+  // 1. Engagement metrics (likes and comments)
+  const likesCount =
+    (likesMap && post.id ? likesMap.get(post.id)?.size : 0) ||
+    post.likesCount ||
+    0;
+  const commentsCount =
+    (commentsMap && post.id ? commentsMap.get(post.id) : 0) ||
+    post.commentsCount ||
+    0;
+
+  // Small ranking boost for likes (2 mins per like, max 10 mins)
+  const likeBoostMs = Math.min(likesCount * (2 * 60 * 1000), 10 * 60 * 1000);
+
+  // Small ranking boost for comments (3 mins per comment, max 15 mins)
+  const commentBoostMs = Math.min(commentsCount * (3 * 60 * 1000), 15 * 60 * 1000);
+
+  // Total engagement boost capped at 20 minutes so recency strictly dominates
+  const engagementBoostMs = Math.min(likeBoostMs + commentBoostMs, 20 * 60 * 1000);
+
+  // 2. Interaction metrics (connection with author or prior interaction)
+  let interactionBoostMs = 0;
+  if (currentUserId && post.userID) {
+    if (connectedUserIds && connectedUserIds.has(post.userID)) {
+      interactionBoostMs += 5 * 60 * 1000; // 5 minutes boost
+    }
+    if (likesMap && likesMap.get(post.id)?.has(currentUserId)) {
+      interactionBoostMs += 5 * 60 * 1000; // 5 minutes boost
+    }
+  }
+  interactionBoostMs = Math.min(interactionBoostMs, 10 * 60 * 1000);
+
+  // Final score: recency is dominant factor. Total combined boost <= 30 mins.
+  return postTime + engagementBoostMs + interactionBoostMs;
+};
+
+export const getFeedPosts = (currentUserId, setAllStatus) => {
+  let allPosts = [];
+  let likesMap = new Map();
+  let commentsMap = new Map();
+  let connectedUserIds = new Set();
+
+  const reRankAndEmit = () => {
+    if (!allPosts || allPosts.length === 0) {
+      setAllStatus([]);
+      return;
+    }
+
+    const scored = allPosts.map((post) => {
+      const score = calculatePostScore(
+        post,
+        currentUserId,
+        likesMap,
+        commentsMap,
+        connectedUserIds
+      );
+      return { post, score };
+    });
+
+    // Sort descending by calculated score: newest / highest ranked first
+    scored.sort((a, b) => b.score - a.score);
+
+    setAllStatus(scored.map((s) => s.post));
+  };
+
+  // 1. Real-time subscription to posts collection
+  const unsubscribePosts = onSnapshot(
+    postsRef,
+    (snapshot) => {
+      allPosts = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      reRankAndEmit();
+    },
+    (err) => {
+      console.error("Error fetching feed posts:", err);
+      setAllStatus([]);
+    }
+  );
+
+  // 2. Real-time subscription to likes collection for dynamic ranking
+  const unsubscribeLikes = onSnapshot(
+    likeRef,
+    (snapshot) => {
+      likesMap.clear();
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        if (data?.postId) {
+          if (!likesMap.has(data.postId)) {
+            likesMap.set(data.postId, new Set());
+          }
+          if (data.userId) {
+            likesMap.get(data.postId).add(data.userId);
+          }
+        }
+      });
+      reRankAndEmit();
+    },
+    (err) => {
+      console.warn("Could not subscribe to likes for ranking:", err);
+    }
+  );
+
+  // 3. Real-time subscription to comments collection for dynamic ranking
+  const unsubscribeComments = onSnapshot(
+    commentsRef,
+    (snapshot) => {
+      commentsMap.clear();
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        if (data?.postId) {
+          commentsMap.set(data.postId, (commentsMap.get(data.postId) || 0) + 1);
+        }
+      });
+      reRankAndEmit();
+    },
+    (err) => {
+      console.warn("Could not subscribe to comments for ranking:", err);
+    }
+  );
+
+  // 4. Real-time subscription to connections for affinity ranking
+  let unsubscribeConnections = null;
+  if (currentUserId) {
+    const connQuery1 = query(connectionRef, where("userId", "==", currentUserId));
+    const connQuery2 = query(connectionRef, where("targetId", "==", currentUserId));
+
+    const unsub1 = onSnapshot(connQuery1, (snap1) => {
+      snap1.docs.forEach((doc) => {
+        const data = doc.data();
+        if (data?.targetId) connectedUserIds.add(data.targetId);
+      });
+      reRankAndEmit();
+    });
+
+    const unsub2 = onSnapshot(connQuery2, (snap2) => {
+      snap2.docs.forEach((doc) => {
+        const data = doc.data();
+        if (data?.userId) connectedUserIds.add(data.userId);
+      });
+      reRankAndEmit();
+    });
+
+    unsubscribeConnections = () => {
+      if (unsub1) unsub1();
+      if (unsub2) unsub2();
+    };
+  }
+
+  return () => {
+    if (unsubscribePosts) unsubscribePosts();
+    if (unsubscribeLikes) unsubscribeLikes();
+    if (unsubscribeComments) unsubscribeComments();
+    if (unsubscribeConnections) unsubscribeConnections();
+  };
 };
 
 export const getAllUsers = (setAllUsers) => {

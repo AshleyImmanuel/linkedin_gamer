@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { postStatus, getStatus, updatePost } from "../../../api/FirestoreAPI";
+import { postStatus, getFeedPosts, updatePost } from "../../../api/FirestoreAPI";
 import { getCurrentTimeStamp } from "../../../helpers/useMoment";
 import ModalComponent from "../Modal";
 import { uploadPostImage } from "../../../api/ImageUpload";
@@ -54,14 +54,14 @@ export default function PostStatus({ currentUser }) {
   };
 
   useEffect(() => {
-    const unsubscribe = getStatus((posts) => {
+    const unsubscribe = getFeedPosts(currentUser?.id, (posts) => {
       setAllStatus(posts);
       setLoading(false);
     });
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, []);
+  }, [currentUser?.id]);
 
   return (
     <div className="post-status-main">
