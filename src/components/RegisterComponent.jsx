@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getUniqueID } from "../helpers/getUniqueId";
 import "../Sass/LoginComponent.scss";
 import { toast } from "react-toastify";
+import { getFirebaseErrorMessage } from "../helpers/getFirebaseErrorMessage";
 
 export default function RegisterComponent() {
   let navigate = useNavigate();
@@ -24,8 +25,7 @@ export default function RegisterComponent() {
       navigate("/home");
       localStorage.setItem("userEmail", res.user.email);
     } catch (err) {
-      console.log(err);
-      toast.error(err?.message || "Cannot Create your Account");
+      toast.error(getFirebaseErrorMessage(err));
     }
   };
 

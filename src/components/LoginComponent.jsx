@@ -4,6 +4,7 @@ import CredoraLogo from "../assets/Credora.jpeg";
 import { useNavigate } from "react-router-dom";
 import "../Sass/LoginComponent.scss";
 import { toast } from "react-toastify";
+import { getFirebaseErrorMessage } from "../helpers/getFirebaseErrorMessage";
 
 export default function LoginComponent() {
   let navigate = useNavigate();
@@ -15,8 +16,7 @@ export default function LoginComponent() {
       localStorage.setItem("userEmail", res.user.email);
       navigate("/home");
     } catch (err) {
-      console.log(err);
-      toast.error(err?.message || "Please Check your Credentials");
+      toast.error(getFirebaseErrorMessage(err));
     }
   };
 
