@@ -1,0 +1,209 @@
+.card {
+    position: relative;
+    overflow: hidden;
+    width: 660px;
+    height: 440px;
+    border-radius: 24px;
+    background: #ffffff;
+    border: 8px solid #ffffff;
+}
+
+.card-bg {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    background-color: #ffffff;
+    background-image: url("credora og.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 18px;
+    translate: 0 0;
+    transition: translate 0.65s ease-in-out;
+}
+
+.card-bg.login {
+    translate: 100% 0;
+}
+
+.hero, .form {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.65s ease-in-out;
+}
+
+.hero.active, .form.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.form.register {
+    left: 50%;
+    translate: 100% 0;
+}
+
+.form.register.active {
+    translate: 0;
+}
+
+.hero.login {
+    left: 50%;
+    translate: 100% 0;
+}
+
+.hero.login.active {
+    translate: 0;
+}
+
+.hero.register {
+    left: 50%;
+    translate: -100% 0;
+}
+
+.hero.register.active {
+    translate: 0;
+}
+
+.hero {
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 50%;
+    color: #1e293b;
+    text-align: center;
+    padding: 0 32px;
+}
+
+.hero h2 {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.hero p {
+    margin: 0;
+    color: #334155;
+    opacity: 0.85;
+    line-height: 1.45;
+}
+
+.hero button {
+    padding: 12px 40px;
+    border-radius: 32px;
+    letter-spacing: 1px;
+    font-family: inherit;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: brown;
+    border: none;
+    box-shadow: 0 4px 12px rgba(4, 98, 118, 0.25);
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.hero button:hover {
+    background-color: #034b5a;
+    color: #ffffff;
+}
+
+.form {
+    background: #ffffff;
+    z-index: 1;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 32px;
+}
+
+.sso {
+    display: flex;
+    gap: 12px;
+    margin: 4px 0;
+}
+
+.sso a {
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    color: #333;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.sso a:hover {
+    border-color: #046276;
+    color: #046276;
+}
+
+.form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+}
+
+.form input {
+    background-color: #f3f3f3;
+    border: 1px solid #e1e1e1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+    font-size: 13px;
+    transition: border 0.3s;
+}
+
+.form input:focus {
+    border-color: #046276;
+}
+
+.form p {
+    font-size: 13px;
+    color: #888;
+    margin: 0;
+}
+
+.form a {
+    font-size: 12px;
+    color: #666;
+    text-decoration: none;
+}
+
+.form a:hover {
+    color: #046276;
+}
+
+.form button[type="submit"] {
+    border-radius: 32px;
+    border: none;
+    background-color: brown;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 36px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 6px;
+}
+
+.form button[type="submit"]:hover {
+    background-color: #034b5a;
+}

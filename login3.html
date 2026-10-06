@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login 3 - Credora</title>
+  
+  <!-- Vite React Refresh Preamble (Required by @vitejs/plugin-react for standalone HTML files) -->
+  <script type="module">
+    import RefreshRuntime from "/@react-refresh";
+    RefreshRuntime.injectIntoGlobalHook(window);
+    window.$RefreshReg$ = () => {};
+    window.$RefreshSig$ = () => (type) => type;
+    window.__vite_plugin_react_preamble_installed__ = true;
+  </script>
+
+  <!-- Font Awesome for Social Media Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #eef2f3;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Vite module script running login3.jsx -->
+  <script type="module">
+    import React from "react";
+    import ReactDOM from "react-dom/client";
+    import Login3 from "./login3.jsx";
+
+    ReactDOM.createRoot(document.getElementById("root")).render(
+      React.createElement(React.StrictMode, null, React.createElement(Login3))
+    );
+  </script>
+</body>
+</html>
